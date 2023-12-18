@@ -17,7 +17,8 @@ public class Admin {
 
     private String firstName;
     private String lastName;
-    private String gender;
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
 
     @Column(unique = true, length = 10)
     private String phoneNumber;

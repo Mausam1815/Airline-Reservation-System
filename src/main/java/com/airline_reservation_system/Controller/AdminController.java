@@ -1,7 +1,9 @@
 package com.airline_reservation_system.Controller;
 
+import ch.qos.logback.core.encoder.EchoEncoder;
 import com.airline_reservation_system.DTO.RequestDTO.SaveAdminRequestDTO;
 import com.airline_reservation_system.DTO.RequestDTO.UpdateAdminRequestDTO;
+import com.airline_reservation_system.DTO.ResponseDTO.DeleteAdminResponseDTO;
 import com.airline_reservation_system.DTO.ResponseDTO.ExceptionResponseDTO;
 import com.airline_reservation_system.DTO.ResponseDTO.SaveAdminResponseDTO;
 import com.airline_reservation_system.Service.AdminService;
@@ -29,13 +31,24 @@ public class AdminController {
     }
 
     @PutMapping("/update-admin")
-    public ResponseEntity<?> updateAdmin(UpdateAdminRequestDTO requestDTO) {
+    public ResponseEntity<?> updateAdmin(@RequestBody UpdateAdminRequestDTO requestDTO) {
         try{
             SaveAdminResponseDTO responseDTO = adminService.updateAdmin(requestDTO);
             return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
         }catch (Exception e) {
             ExceptionResponseDTO exceptionResponseDTO = new ExceptionResponseDTO(e.getMessage());
             return new ResponseEntity<>(exceptionResponseDTO, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @DeleteMapping("/delete-admin")
+    public ResponseEntity<?> deleteAdmin(@RequestParam Long id) {
+        try{
+            DeleteAdminResponseDTO responseDTO = adminService.deleteAdmin(id);
+            return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+        }catch (Exception e) {
+            ExceptionResponseDTO exceptionResponseDTO = new ExceptionResponseDTO(e.getMessage());
+            return new ResponseEntity<>(exceptionResponseDTO, HttpStatus.NOT_FOUND);
         }
     }
 }

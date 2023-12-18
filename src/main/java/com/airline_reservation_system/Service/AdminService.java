@@ -2,6 +2,7 @@ package com.airline_reservation_system.Service;
 
 import com.airline_reservation_system.DTO.RequestDTO.SaveAdminRequestDTO;
 import com.airline_reservation_system.DTO.RequestDTO.UpdateAdminRequestDTO;
+import com.airline_reservation_system.DTO.ResponseDTO.DeleteAdminResponseDTO;
 import com.airline_reservation_system.Enum.Gender;
 import com.airline_reservation_system.Exception.AdminNotFoundException;
 import com.airline_reservation_system.Model.Admin;
@@ -27,14 +28,14 @@ public class AdminService {
         try {
             ValidateEmail.validateEmail(adminRequestDTO.getEmail());
             ValidatePhoneNumber.validatePhoneNumber(adminRequestDTO.getPhoneNumber());
-            ValidateGender.validateGender(adminRequestDTO.getGender().toString());
+            ValidateGender.validateGender(adminRequestDTO.getGender());
             ValidateDate.validateDate(adminRequestDTO.getDateOfBirth());
             ValidatePassword.validatePassword(adminRequestDTO.getPassword());
 
             Admin admin = new Admin();
             admin.setFirstName(adminRequestDTO.getFirstName());
             admin.setLastName(adminRequestDTO.getLastName());
-            admin.setGender(adminRequestDTO.getGender().toString().toUpperCase());
+            admin.setGender(Gender.valueOf(adminRequestDTO.getGender()));
             admin.setPhoneNumber(adminRequestDTO.getPhoneNumber());
             admin.setEmail(adminRequestDTO.getEmail());
             admin.setAadhaarId(adminRequestDTO.getAadhaarId());
@@ -78,6 +79,17 @@ public class AdminService {
             return responseDTO;
         }catch (Exception e) {
             throw new AdminNotFoundException("Admin not found. Please enter correct Admin Id.");
+        }
+    }
+    public DeleteAdminResponseDTO deleteAdmin(Long id) {
+        try{
+            Admin admin = adminRepository.findById(id).orElseThrow();
+            emailService.deleteAdminMail(admin);
+            adminRepository.delete(admin);
+
+            return new DeleteAdminResponseDTO("Admin deleted successfully.");
+        }catch (Exception e) {
+            throw new AdminNotFoundException("Admin not found. Please enter correct admin id.");
         }
     }
 }

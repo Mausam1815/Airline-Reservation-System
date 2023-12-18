@@ -55,15 +55,24 @@ public class EmailService {
         String email = admin.getEmail();
         String address = admin.getAddress();
 
-        String body = String.format("Welcome to Sam Airlines, " +
-                "Your Admin details have been successfully updated: " +
-                "Your Admin Id: '%s' " +
-                "Your Username: '%s' " +
-                "Your Password: '%s' " +
-                "Your phoneNumber: '%s' " +
-                "Your email: '%s' " +
-                "Your address: '%s' " +
+        String body = String.format("Welcome to Sam Airlines, " + "\n" +
+                "Your Admin details have been successfully updated: " + "\n" +
+                "Your Admin Id: '%s' " + "\n" +
+                "Your Username: '%s' " + "\n" +
+                "Your Password: '%s' " + "\n" +
+                "Your phoneNumber: '%s' " + "\n" +
+                "Your email: '%s' " + "\n" +
+                "Your address: '%s' " + "\n" +
                 "Thank you.", id, username, password, phoneNumber, email, address);
+
+        sendMail(to, subject, body);
+    }
+
+    public void deleteAdminMail(Admin admin) {
+        String to = admin.getEmail();
+        String subject = "Deleted admin successfully.";
+        String body = "Admin deleted successfully from our database." +
+                "Thank you.";
 
         sendMail(to, subject, body);
     }
