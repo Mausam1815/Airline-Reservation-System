@@ -6,6 +6,7 @@ import com.airline_reservation_system.DTO.RequestDTO.UpdateAdminRequestDTO;
 import com.airline_reservation_system.DTO.ResponseDTO.DeleteAdminResponseDTO;
 import com.airline_reservation_system.DTO.ResponseDTO.ExceptionResponseDTO;
 import com.airline_reservation_system.DTO.ResponseDTO.SaveAdminResponseDTO;
+import com.airline_reservation_system.DTO.ResponseDTO.ShowAdminResponseDTO;
 import com.airline_reservation_system.Service.AdminService;
 import com.airline_reservation_system.Service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +35,7 @@ public class AdminController {
     public ResponseEntity<?> updateAdmin(@RequestBody UpdateAdminRequestDTO requestDTO) {
         try{
             SaveAdminResponseDTO responseDTO = adminService.updateAdmin(requestDTO);
-            return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
+            return new ResponseEntity<>(responseDTO, HttpStatus.OK);
         }catch (Exception e) {
             ExceptionResponseDTO exceptionResponseDTO = new ExceptionResponseDTO(e.getMessage());
             return new ResponseEntity<>(exceptionResponseDTO, HttpStatus.BAD_REQUEST);
@@ -45,6 +46,17 @@ public class AdminController {
     public ResponseEntity<?> deleteAdmin(@RequestParam Long id) {
         try{
             DeleteAdminResponseDTO responseDTO = adminService.deleteAdmin(id);
+            return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+        }catch (Exception e) {
+            ExceptionResponseDTO exceptionResponseDTO = new ExceptionResponseDTO(e.getMessage());
+            return new ResponseEntity<>(exceptionResponseDTO, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping("/get-admin-by-id")
+    public ResponseEntity<?> getAdminById(Long id) {
+        try {
+            ShowAdminResponseDTO responseDTO = adminService.getAdminById(id);
             return new ResponseEntity<>(responseDTO, HttpStatus.OK);
         }catch (Exception e) {
             ExceptionResponseDTO exceptionResponseDTO = new ExceptionResponseDTO(e.getMessage());

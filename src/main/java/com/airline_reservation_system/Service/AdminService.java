@@ -3,6 +3,7 @@ package com.airline_reservation_system.Service;
 import com.airline_reservation_system.DTO.RequestDTO.SaveAdminRequestDTO;
 import com.airline_reservation_system.DTO.RequestDTO.UpdateAdminRequestDTO;
 import com.airline_reservation_system.DTO.ResponseDTO.DeleteAdminResponseDTO;
+import com.airline_reservation_system.DTO.ResponseDTO.ShowAdminResponseDTO;
 import com.airline_reservation_system.Enum.Gender;
 import com.airline_reservation_system.Exception.AdminNotFoundException;
 import com.airline_reservation_system.Model.Admin;
@@ -62,8 +63,12 @@ public class AdminService {
     public SaveAdminResponseDTO updateAdmin(UpdateAdminRequestDTO requestDTO) {
         try{
             Admin admin = adminRepository.findById(requestDTO.getId()).orElseThrow();
-            admin.setPhoneNumber(requestDTO.getPhoneNumber());
+            ValidateEmail.validateEmail(requestDTO.getEmail());
+            ValidatePhoneNumber.validatePhoneNumber(requestDTO.getPhoneNumber());
+            ValidatePassword.validatePassword(requestDTO.getPassword());
+
             admin.setEmail(requestDTO.getEmail());
+            admin.setPhoneNumber(requestDTO.getPhoneNumber());
             admin.setPassword(requestDTO.getPassword());
             admin.setAddress(requestDTO.getAddress());
 
@@ -78,7 +83,7 @@ public class AdminService {
 
             return responseDTO;
         }catch (Exception e) {
-            throw new AdminNotFoundException("Admin not found. Please enter correct Admin Id.");
+            throw new RuntimeException(e);
         }
     }
     public DeleteAdminResponseDTO deleteAdmin(Long id) {
@@ -88,6 +93,24 @@ public class AdminService {
             adminRepository.delete(admin);
 
             return new DeleteAdminResponseDTO("Admin deleted successfully.");
+        }catch (Exception e) {
+            throw new AdminNotFoundException("Admin not found. Please enter correct admin id.");
+        }
+    }
+
+    public ShowAdminResponseDTO getAdminById(Long id) {
+        try {
+            Admin admin = adminRepository.findById(id).orElseThrow();
+            ShowAdminResponseDTO responseDTO = new ShowAdminResponseDTO();
+            responseDTO.setId(admin.getId());
+            responseDTO.setName(admin.getFirstName() + " " + admin.getLastName());
+            responseDTO.setGender(admin.getGender().toString());
+            responseDTO.setPhoneNumber(admin.getPhoneNumber());
+            responseDTO.setEmail(admin.getEmail());
+            responseDTO.setUserName(admin.getUserName());
+            responseDTO.setDateOfBirth(admin.getDateOfBirth());
+
+            return responseDTO;
         }catch (Exception e) {
             throw new AdminNotFoundException("Admin not found. Please enter correct admin id.");
         }
