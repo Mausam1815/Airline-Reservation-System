@@ -9,6 +9,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @Setter
 @Getter
-public class DeleteAdminResponseDTO {
+public class DeleteResponseDTO {
     private String response;
 }

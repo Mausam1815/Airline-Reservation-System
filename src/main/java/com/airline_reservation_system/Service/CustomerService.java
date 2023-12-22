@@ -1,8 +1,11 @@
 package com.airline_reservation_system.Service;
 
 import com.airline_reservation_system.DTO.RequestDTO.SaveCustomerRequestDTO;
+import com.airline_reservation_system.DTO.RequestDTO.UpdateCustomerRequestDTO;
+import com.airline_reservation_system.DTO.ResponseDTO.DeleteResponseDTO;
 import com.airline_reservation_system.DTO.ResponseDTO.SaveCustomerResponseDTO;
 import com.airline_reservation_system.Enum.Gender;
+import com.airline_reservation_system.Exception.CustomerNotFoundException;
 import com.airline_reservation_system.Model.Customer;
 import com.airline_reservation_system.Repository.CustomerRepository;
 import com.airline_reservation_system.Validaton.DateValidation.ValidateDate;
@@ -57,6 +60,44 @@ public class CustomerService {
             return responseDTO;
         }catch (Exception e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    public SaveCustomerResponseDTO updateCustomer(UpdateCustomerRequestDTO requestDTO) {
+        try {
+            Customer customer = customerRepository.findById(requestDTO.getId()).orElseThrow();
+            ValidateEmail.validateEmail(requestDTO.getEmail());
+            ValidatePassword.validatePassword(requestDTO.getPassword());
+            ValidatePhoneNumber.validatePhoneNumber(requestDTO.getPhoneNumber());
+
+            customer.setEmail(requestDTO.getEmail());
+            customer.setPhoneNumber(requestDTO.getPhoneNumber());
+            customer.setPassword(requestDTO.getPassword());
+            customer.setAddress(requestDTO.getAddress());
+
+            customerRepository.save(customer);
+            emailService.updateCustomerMail(customer);
+
+            SaveCustomerResponseDTO responseDTO = new SaveCustomerResponseDTO();
+            responseDTO.setFirstName(customer.getFirstName());
+            responseDTO.setLastName(customer.getLastName());
+            responseDTO.setEmail(customer.getEmail());
+            responseDTO.setUserName(customer.getUserName());
+
+            return responseDTO;
+        }catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public DeleteResponseDTO deleteCustomer(Long id) {
+        try {
+            Customer customer = customerRepository.findById(id).orElseThrow();
+            emailService.deleteCustomerMail(customer);
+            customerRepository.delete(customer);
+
+            return new DeleteResponseDTO("Customer deleted successfully.");
+        }catch (Exception e) {
+            throw new CustomerNotFoundException("Customer not found. Please enter correct customer id.");
         }
     }
 }

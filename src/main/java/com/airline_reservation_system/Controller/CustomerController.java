@@ -1,6 +1,8 @@
 package com.airline_reservation_system.Controller;
 
 import com.airline_reservation_system.DTO.RequestDTO.SaveCustomerRequestDTO;
+import com.airline_reservation_system.DTO.RequestDTO.UpdateCustomerRequestDTO;
+import com.airline_reservation_system.DTO.ResponseDTO.DeleteResponseDTO;
 import com.airline_reservation_system.DTO.ResponseDTO.ExceptionResponseDTO;
 import com.airline_reservation_system.DTO.ResponseDTO.SaveCustomerResponseDTO;
 import com.airline_reservation_system.Service.CustomerService;
@@ -13,10 +15,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.logging.Logger;
 
@@ -39,6 +38,38 @@ public class CustomerController {
         try {
             SaveCustomerResponseDTO responseDTO = customerService.saveNewCustomer(requestDTO);
             return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
+        }catch (Exception e) {
+            ExceptionResponseDTO exceptionResponseDTO = new ExceptionResponseDTO(e.getMessage());
+            return new ResponseEntity<>(exceptionResponseDTO, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @Operation(summary = "Update customer details.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Customer details updated successfully!!", content = {@Content(schema = @Schema(implementation = SaveCustomerResponseDTO.class), mediaType = "application/json")}),
+            @ApiResponse(responseCode = "400", description = "Error!! check details.", content = {@Content(schema = @Schema(implementation = ExceptionResponseDTO.class), mediaType = "application/json")})
+    })
+    @PutMapping("/update-customer")
+    public ResponseEntity<?> updateCustomer(@RequestBody UpdateCustomerRequestDTO requestDTO) {
+        try {
+            SaveCustomerResponseDTO responseDTO = customerService.updateCustomer(requestDTO);
+            return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+        }catch (Exception e) {
+            ExceptionResponseDTO exceptionResponseDTO = new ExceptionResponseDTO(e.getMessage());
+            return new ResponseEntity<>(exceptionResponseDTO, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @Operation(summary = "Delete customer from database.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Customer deleted successfully!!", content = {@Content(schema = @Schema(implementation = DeleteResponseDTO.class), mediaType = "application/json")}),
+            @ApiResponse(responseCode = "400", description = "Error!! check details", content = {@Content(schema = @Schema(implementation = ExceptionResponseDTO.class), mediaType = "application/json")})
+    })
+    @DeleteMapping("/delete-customer")
+    public ResponseEntity<?> deleteCustomer(@RequestParam Long id) {
+        try {
+            DeleteResponseDTO responseDTO = customerService.deleteCustomer(id);
+            return new ResponseEntity<>(responseDTO, HttpStatus.OK);
         }catch (Exception e) {
             ExceptionResponseDTO exceptionResponseDTO = new ExceptionResponseDTO(e.getMessage());
             return new ResponseEntity<>(exceptionResponseDTO, HttpStatus.BAD_REQUEST);

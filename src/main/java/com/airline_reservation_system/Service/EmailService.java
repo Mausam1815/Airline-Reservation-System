@@ -93,4 +93,35 @@ public class EmailService {
 
         sendMail(to, sub, body);
     }
+    public void updateCustomerMail(Customer customer) {
+        String to = customer.getEmail();
+        String subject = "Customer details are updated.";
+
+        String id = String.valueOf(customer.getId());
+        String username = customer.getUserName();
+        String password = customer.getPassword();
+        String phoneNumber = customer.getPhoneNumber();
+        String email = customer.getEmail();
+        String address = customer.getAddress();
+
+        String body = String.format("Welcome to Sam Airlines, " + "\n" +
+                "Your Customer details have been successfully updated: " + "\n" +
+                "Your Customer Id: '%s' " + "\n" +
+                "Your Username: '%s' " + "\n" +
+                "Your Password: '%s' " + "\n" +
+                "Your phoneNumber: '%s' " + "\n" +
+                "Your email: '%s' " + "\n" +
+                "Your address: '%s' " + "\n" +
+                "Thank you.", id, username, password, phoneNumber, email, address);
+
+        sendMail(to, subject, body);
+    }
+    public void deleteCustomerMail(Customer customer) {
+        String to = customer.getEmail();
+        String subject = "Delete customer successfully.";
+        String body = "Customer details deleted successfully from out database." + "\n" +
+                "Thank you.";
+
+        sendMail(to, subject, body);
+    }
 }

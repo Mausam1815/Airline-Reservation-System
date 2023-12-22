@@ -2,7 +2,7 @@ package com.airline_reservation_system.Service;
 
 import com.airline_reservation_system.DTO.RequestDTO.SaveAdminRequestDTO;
 import com.airline_reservation_system.DTO.RequestDTO.UpdateAdminRequestDTO;
-import com.airline_reservation_system.DTO.ResponseDTO.DeleteAdminResponseDTO;
+import com.airline_reservation_system.DTO.ResponseDTO.DeleteResponseDTO;
 import com.airline_reservation_system.DTO.ResponseDTO.ShowAdminResponseDTO;
 import com.airline_reservation_system.Enum.Gender;
 import com.airline_reservation_system.Exception.AdminNotFoundException;
@@ -89,13 +89,13 @@ public class AdminService {
             throw new RuntimeException(e);
         }
     }
-    public DeleteAdminResponseDTO deleteAdmin(Long id) {
+    public DeleteResponseDTO deleteAdmin(Long id) {
         try{
             Admin admin = adminRepository.findById(id).orElseThrow();
             emailService.deleteAdminMail(admin);
             adminRepository.delete(admin);
 
-            return new DeleteAdminResponseDTO("Admin deleted successfully.");
+            return new DeleteResponseDTO("Admin deleted successfully.");
         }catch (Exception e) {
             throw new AdminNotFoundException("Admin not found. Please enter correct admin id.");
         }
