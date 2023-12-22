@@ -1,5 +1,6 @@
 package com.airline_reservation_system.Model;
 
+import com.airline_reservation_system.Enum.Gender;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,7 +21,9 @@ public class Customer {
 
     private String firstName;
     private String lastName;
-    private String gender;
+
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
 
     @Column(unique = true, length = 10)
     private String phoneNumber;

@@ -1,6 +1,7 @@
 package com.airline_reservation_system.Service;
 
 import com.airline_reservation_system.Model.Admin;
+import com.airline_reservation_system.Model.Customer;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -35,12 +36,12 @@ public class EmailService {
         String username = admin.getUserName();
         String password = admin.getPassword();
 
-        String body = "Welcome to Sam Airlines," + "\n" +
+        String body = String.format("Welcome to Sam Airlines," + "\n" +
                 "You've been successfully added as 'Admin' in Sam Airlines." + "\n" +
-                "Your Admin Id: " + "'"+id+"'" + "\n" +
-                "Your Username: " + "'"+username+"'" + "\n" +
-                "Your Password: " + "'"+password+"'" + "\n" +
-                "Thank you.";
+                "Your Admin Id: '%s' " + "\n" +
+                "Your Username: '%s' " + "\n" +
+                "Your Password: '%s' " + "\n" +
+                "Thank you.", id, username, password);
 
         sendMail(to, subject, body);
     }
@@ -75,5 +76,21 @@ public class EmailService {
                 "Thank you.";
 
         sendMail(to, subject, body);
+    }
+    public void saveNewCustomerMail(Customer customer) {
+        String to = customer.getEmail();
+        String sub = "You've been added as Customer.";
+        String id = String.valueOf(customer.getId());
+        String username = customer.getUserName();
+        String password = customer.getPassword();
+
+        String body = String.format("Welcome to Sam Airlines," + "\n" +
+                "You've been successfully added as 'Customer' in Sam Airlines." + "\n" +
+                "Your Customer Id: '%s' " + "\n" +
+                "Your Username: '%s' " + "\n" +
+                "Your Password: '%s' " + "\n" +
+                "Thank you.", id, username, password);
+
+        sendMail(to, sub, body);
     }
 }

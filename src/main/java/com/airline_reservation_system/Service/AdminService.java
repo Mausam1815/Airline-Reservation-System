@@ -17,6 +17,9 @@ import com.airline_reservation_system.Validaton.PhoneNumberValidation.ValidatePh
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class AdminService {
     @Autowired
@@ -36,7 +39,7 @@ public class AdminService {
             Admin admin = new Admin();
             admin.setFirstName(adminRequestDTO.getFirstName());
             admin.setLastName(adminRequestDTO.getLastName());
-            admin.setGender(Gender.valueOf(adminRequestDTO.getGender()));
+            admin.setGender(Gender.valueOf(adminRequestDTO.getGender().toUpperCase()));
             admin.setPhoneNumber(adminRequestDTO.getPhoneNumber());
             admin.setEmail(adminRequestDTO.getEmail());
             admin.setAadhaarId(adminRequestDTO.getAadhaarId());
@@ -114,5 +117,23 @@ public class AdminService {
         }catch (Exception e) {
             throw new AdminNotFoundException("Admin not found. Please enter correct admin id.");
         }
+    }
+
+    public List<ShowAdminResponseDTO> getAllAdminsInfo() {
+        List<ShowAdminResponseDTO> responseDTOList = new ArrayList<>();
+        List<Admin> adminList = adminRepository.findAll();
+        for(Admin admin : adminList) {
+            ShowAdminResponseDTO responseDTO = new ShowAdminResponseDTO();
+            responseDTO.setId(admin.getId());
+            responseDTO.setName(admin.getFirstName() + " " + admin.getLastName());
+            responseDTO.setGender(admin.getGender().toString());
+            responseDTO.setPhoneNumber(admin.getPhoneNumber());
+            responseDTO.setEmail(admin.getEmail());
+            responseDTO.setUserName(admin.getUserName());
+            responseDTO.setDateOfBirth(admin.getDateOfBirth());
+
+            responseDTOList.add(responseDTO);
+        }
+        return responseDTOList;
     }
 }
