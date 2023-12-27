@@ -4,6 +4,7 @@ import com.airline_reservation_system.DTO.RequestDTO.SaveCustomerRequestDTO;
 import com.airline_reservation_system.DTO.RequestDTO.UpdateCustomerRequestDTO;
 import com.airline_reservation_system.DTO.ResponseDTO.DeleteResponseDTO;
 import com.airline_reservation_system.DTO.ResponseDTO.SaveCustomerResponseDTO;
+import com.airline_reservation_system.DTO.ResponseDTO.ShowCustomerResponseDTO;
 import com.airline_reservation_system.Enum.Gender;
 import com.airline_reservation_system.Exception.CustomerNotFoundException;
 import com.airline_reservation_system.Model.Customer;
@@ -99,5 +100,24 @@ public class CustomerService {
         }catch (Exception e) {
             throw new CustomerNotFoundException("Customer not found. Please enter correct customer id.");
         }
+    }
+
+    public ShowCustomerResponseDTO getCustomerById(Long id) {
+        try {
+            Customer customer = customerRepository.findById(id).orElseThrow();
+            ShowCustomerResponseDTO responseDTO = new ShowCustomerResponseDTO();
+            responseDTO.setId(customer.getId());
+            responseDTO.setName(customer.getFirstName() + " " + customer.getLastName());
+            responseDTO.setGender(customer.getGender().toString());
+            responseDTO.setPhoneNumber(customer.getPhoneNumber());
+            responseDTO.setEmail(customer.getEmail());
+            responseDTO.setUserName(customer.getUserName());
+            responseDTO.setDateOfBirth(customer.getDateOfBirth());
+
+            return responseDTO;
+        } catch (Exception e) {
+            throw new CustomerNotFoundException("Customer not found. Please enter correct Customer id.");
+        }
+
     }
 }
