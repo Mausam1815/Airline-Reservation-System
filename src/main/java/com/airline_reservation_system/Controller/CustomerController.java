@@ -5,6 +5,7 @@ import com.airline_reservation_system.DTO.RequestDTO.UpdateCustomerRequestDTO;
 import com.airline_reservation_system.DTO.ResponseDTO.DeleteResponseDTO;
 import com.airline_reservation_system.DTO.ResponseDTO.ExceptionResponseDTO;
 import com.airline_reservation_system.DTO.ResponseDTO.SaveCustomerResponseDTO;
+import com.airline_reservation_system.DTO.ResponseDTO.ShowCustomerResponseDTO;
 import com.airline_reservation_system.Service.CustomerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -73,6 +74,22 @@ public class CustomerController {
         }catch (Exception e) {
             ExceptionResponseDTO exceptionResponseDTO = new ExceptionResponseDTO(e.getMessage());
             return new ResponseEntity<>(exceptionResponseDTO, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @Operation(summary = "Get Customer by Customer ID.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "302", description = "Customer found successfully!!", content = {@Content(schema = @Schema(implementation = ShowCustomerResponseDTO.class), mediaType = "application/json")}),
+            @ApiResponse(responseCode = "404", description = "Error!! check details", content = {@Content(schema = @Schema(implementation = ExceptionResponseDTO.class), mediaType = "application/json")})
+    })
+    @GetMapping("/get-customer-by-id")
+    public ResponseEntity<?> getCustomerById(@RequestParam Long id) {
+        try {
+            ShowCustomerResponseDTO responseDTO = customerService.getCustomerById(id);
+            return new ResponseEntity<>(responseDTO, HttpStatus.FOUND);
+        }catch (Exception e) {
+            ExceptionResponseDTO exceptionResponseDTO = new ExceptionResponseDTO(e.getMessage());
+            return new ResponseEntity<>(exceptionResponseDTO, HttpStatus.NOT_FOUND);
         }
     }
 }
