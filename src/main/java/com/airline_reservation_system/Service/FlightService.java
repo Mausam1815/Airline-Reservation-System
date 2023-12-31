@@ -1,6 +1,7 @@
 package com.airline_reservation_system.Service;
 
 import com.airline_reservation_system.DTO.RequestDTO.SaveFlightRequestDTO;
+import com.airline_reservation_system.DTO.RequestDTO.UpdateFlightRequestDTO;
 import com.airline_reservation_system.DTO.ResponseDTO.SaveFlightResponseDTO;
 import com.airline_reservation_system.Model.Flight;
 import com.airline_reservation_system.Repository.FlightRepository;
@@ -37,20 +38,46 @@ public class FlightService {
 
             flightRepository.save(flight);
 
-            SaveFlightResponseDTO responseDTO = new SaveFlightResponseDTO();
-            responseDTO.setId(flight.getId());
-            responseDTO.setFlightName(flight.getFlightName());
-            responseDTO.setNoOfSeats(flight.getNoOfSeats());
-            responseDTO.setArrivalTo(flight.getArrivalTo());
-            responseDTO.setDepartureFrom(flight.getDepartureFrom());
-            responseDTO.setArrivalTime(flight.getArrivalTime());
-            responseDTO.setDepartureTime(flight.getDepartureTime());
-            responseDTO.setFare(flight.getFare());
-            responseDTO.setDuration(flight.getDuration());
-
-            return responseDTO;
+            return getSaveFlightResponseDTO(flight);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+    public SaveFlightResponseDTO updateFlight(UpdateFlightRequestDTO requestDTO) {
+        try {
+            Flight flight = flightRepository.findById(requestDTO.getId()).orElseThrow();
+
+            ValidateLocation.validateLocation(requestDTO.getArrivalTo());
+            ValidateLocation.validateLocation(requestDTO.getDepartureFrom());
+            ValidateTime.validateTime(requestDTO.getArrivalTime());
+            ValidateTime.validateTime(requestDTO.getDepartureTime());
+
+            flight.setArrivalTo(requestDTO.getArrivalTo());
+            flight.setDepartureFrom(requestDTO.getDepartureFrom());
+            flight.setArrivalTime(requestDTO.getArrivalTime());
+            flight.setDepartureTime(requestDTO.getDepartureTime());
+            flight.setFare(requestDTO.getFare());
+            flight.setDuration(requestDTO.getDuration());
+
+            flightRepository.save(flight);
+
+            return getSaveFlightResponseDTO(flight);
+        }catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static SaveFlightResponseDTO getSaveFlightResponseDTO(Flight flight) {
+        SaveFlightResponseDTO responseDTO = new SaveFlightResponseDTO();
+        responseDTO.setId(flight.getId());
+        responseDTO.setFlightName(flight.getFlightName());
+        responseDTO.setNoOfSeats(flight.getNoOfSeats());
+        responseDTO.setArrivalTo(flight.getArrivalTo());
+        responseDTO.setDepartureFrom(flight.getDepartureFrom());
+        responseDTO.setArrivalTime(flight.getArrivalTime());
+        responseDTO.setDepartureTime(flight.getDepartureTime());
+        responseDTO.setFare(flight.getFare());
+        responseDTO.setDuration(flight.getDuration());
+        return responseDTO;
     }
 }
