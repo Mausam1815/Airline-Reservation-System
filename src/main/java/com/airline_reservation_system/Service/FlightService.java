@@ -3,6 +3,7 @@ package com.airline_reservation_system.Service;
 import com.airline_reservation_system.DTO.RequestDTO.SaveFlightRequestDTO;
 import com.airline_reservation_system.DTO.RequestDTO.UpdateFlightRequestDTO;
 import com.airline_reservation_system.DTO.ResponseDTO.SaveFlightResponseDTO;
+import com.airline_reservation_system.DTO.ResponseDTO.ShowFlightResponseDTO;
 import com.airline_reservation_system.Model.Flight;
 import com.airline_reservation_system.Repository.FlightRepository;
 import com.airline_reservation_system.Validaton.LocationValidation.ValidateLocation;
@@ -62,6 +63,27 @@ public class FlightService {
             flightRepository.save(flight);
 
             return getSaveFlightResponseDTO(flight);
+        }catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public ShowFlightResponseDTO getFlightById(Long id) {
+        try {
+            Flight flight = flightRepository.findById(id).orElseThrow();
+
+            ShowFlightResponseDTO responseDTO = new ShowFlightResponseDTO();
+            responseDTO.setId(flight.getId());
+            responseDTO.setFlightName(flight.getFlightName());
+            responseDTO.setArrivalTo(flight.getArrivalTo());
+            responseDTO.setDepartureFrom(flight.getDepartureFrom());
+            responseDTO.setArrivalTime(flight.getArrivalTime());
+            responseDTO.setDepartureTime(flight.getDepartureTime());
+            responseDTO.setFare(flight.getFare());
+            responseDTO.setDuration(flight.getDuration());
+            responseDTO.setNoOfSeatsAvailable(flight.getNoOfSeats() - flight.getFlightsSoldTickets().size());
+
+            return responseDTO;
         }catch (Exception e) {
             throw new RuntimeException(e);
         }
